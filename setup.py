@@ -42,6 +42,7 @@ setup(
             'pkillu = scutools.app:main',
             'ppred = scutools.app:main',
             'ptest = scutools.app:main',
+            'phost = scutools.app:main',
         ]
     },
     author = "Somsak Sriprayoonsakul",

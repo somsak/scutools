@@ -57,6 +57,9 @@ def main() :
         elif progname == 'ptest' :
             from scutools.ptest import Ptest
             execer = Ptest(sys.argv[1:])
+        elif progname == 'phost' :
+            from scutools.phost import Phost
+            execer = Phost(sys.argv[1:])
         else :
             print_error('invalid command name %s' % (progname))
             sys.exit(1)
