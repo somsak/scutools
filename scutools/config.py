@@ -49,6 +49,6 @@ try :
         if _config.has_option('main', 'sce_host') :
             sce_host = _config.get('main', 'sce_host')
         if _config.has_option('main', 'gstat') :
-            sce_host = _config.get('main', 'gstat')
+            gstat = _config.get('main', 'gstat')
 except :
     pass
