@@ -11,9 +11,9 @@ conf_name = 'scutools.conf'
 conf_part = 'part'
 conf_dir_list = [\
     os.path.join(os.path.expanduser('~'), '.scutools'),
-    '/etc',
-    '/usr/etc',
-    '/usr/local/etc',
+    '/etc/scutools',
+    '/usr/etc/scutools',
+    '/usr/local/etc/scutools',
 ]
 
 for dir in conf_dir_list :
