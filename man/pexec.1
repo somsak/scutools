@@ -1,0 +1,260 @@
+.TH Scalable\ Unix\ Tools 1 "24/03/2003" " " ""
+.SH NAME
+.B pexec 
+\- execute any command on selected node.
+
+.B pls
+\- list the directory contents
+
+.B pcp
+\- copy the file locally
+
+.B pmv
+\- move the file locally
+
+.B prm
+\- remove the file locally
+
+.B pps
+\- process list
+
+.B pfind
+\- searches for files in directory hierarchy
+
+.B ptest
+\- check file types and compare values on the selected nodes
+
+.B pfps
+\- searches the process by the process name
+
+.B pkillps
+\- send signal to process by name
+
+.B pkillu
+\- send signal to process by effective user
+
+.B pdist
+\- distribute the file to selected node
+
+.B phost
+\- print or count host in hostlist
+
+.SH SYNOPSIS 
+.B pexec
+[node selecting options] [COMMAND [ARG]...]
+
+.B pls
+[node selecting options] [ls options]
+
+.B pcp
+[node selecting options] [cp options]
+
+.B pmv
+[node selecting options] [mv options]
+
+.B prm
+[node selecting options] [rm options]
+
+.B pps
+[node selecting options] [ps options]
+
+.B ptest
+[node selecting options] <test options>
+
+.B pfind
+[ node selecting options] [find options]
+
+.B pfps
+[node selecting options] <process name>
+
+.B pkillps
+[node selecting options] [-s signal name] <process name>
+
+.B pkillu
+[node selecting options] [-s signal name] <user name>
+
+.B pdist
+[node selecting options] -[rp] SOURCE... DEST
+
+.B phost
+[node selecting options] -[n]
+
+.SH DESCRIPTION 
+.PP
+Scalable Unix Tools is a set of frequently used UNIX command for cluster. The usage of each command are described briefly below.
+
+.SH PLS,PCP,PMV,PPS,PRM, and PTEST
+.PP
+Execute the corresponding command on selected nodes. Note that, the result of 
+.B ptest
+is the and'ed of all returned value of 'test' on all node.
+
+.SH PEXEC
+.PP
+Execute COMMAND, with the arguments ARG, on the selected nodes.
+
+.SH PKILLPS and PKILLU
+.PP
+Exec the 'kill' command on selected node base on its process name or the effective user of the process.
+.TP
+\fB\-s
+specify the signal name. The signal name format is the same as kill(1)
+
+.SH PDIST
+.PP
+Distribute the file to selected node.
+.TP
+\fB\-r
+copy the directories recursively.
+.TP
+\fB\-p
+preserve the file permission.
+
+.SH PHOST
+.PP
+Print available hostlist, combining with host selecting options, the command can show on/off-line host(s).
+.TP
+\fB\-n
+Print number of host instead of of host name.
+
+.SH HOST SELECTING OPTIONS
+.PP
+All Scalable Unix Tools accept the same format of node selecting option. Note that, omitting the node selecting option means '-a' (Omitting the options = the first argument passed is not one of the node selecting option). The default operation for node selection is to apply only to the alive node, that is, the command will not be excuted on any down node even though specified. To force doing the command on down node, use
+.B --sut-forceall
+option.
+
+.PP
+The node information is gather from
+.B cms_node(1)
+command. Specify the node outside the scope of
+.B 'cms_node -a'
+won't have any effect.
+
+.TP
+\fB\-a\fR
+select all node.
+.TP
+\fB\-aa\fR
+select all node, including off-line nodes.
+.TP
+\fB\-e\fR
+select all node EXCEPT the current node (The node that invoke the command).
+.TP
+\fB\-d\fR
+select only off-line nodes.
+.TP
+\fB\-h <node specification>\fR
+specify the list of node in argument. The list of node must be in node specificatino format describe in the next section.
+.TP
+\fB\-p <partition>\fR
+read the list of node from file <partition>. It is possible to pre-define the partition file by placing the file in directory your_sysconf_dir/scutools/part (eg. /etc/scutools/part). All SUT command read partition from the pre-defined file first, then trying to open it from the current directory. The format of the partition must correspond to the partition file format describe below.
+
+.SH HOST SPECIFICATION FORMAT
+.PP
+The host specification format is a list of (a little bit extended) regular expression (see regex(7)) separate by comma (,). For example
+
+.nf
+	pexec -h compute.*,frontend hostname
+.fi
+
+.PP
+executes the command 'hostname' on the frontend plus the node which name precede with 'compute'
+
+.PP
+Since the regular expression processing is base on the character, there is an extended syntax for the regular expression to support the numbering range using '<' and '>'. For example
+
+.nf
+	pexec -h compute<20-100> hostname
+.fi
+
+.PP
+executes 'hostname' on the node with the name in range of 20-100 (eg. compute20, compute21, compute22, ... , compute100)
+
+.SH PARTITION FILE FORMAT
+.PP
+Partition file contains a list of node name, one node per line. The leading '#' may be used as the comment. The node name will be interpreted as the regular expression. For example
+
+.nf
+	# partition file for myrinet node
+	myri-node<1-5>
+	myri-frontend
+.fi
+.PP
+has the same meaning as
+
+.nf
+	# partition file for myrinet node
+	myri-node1
+	myri-node2
+	myri-node3
+	myri-node4
+	myri-node5
+	myri-frontend
+.fi
+.PP
+Note that, it is possible to use the same file format as MPICH machine file. The trailing :<number of cpu> will be ignored.
+
+.SH Special SUT options
+.PP
+All commands accept a special option in the form of --sut-option. The list of acceptable options are
+.TP
+\fB\-\-sut\-forceall\fR
+By default, the command will execute only on the on-line node. --sut-forceall force the command to run on both on-line and off-line node.
+.TP
+\fB\-\-sut\-max\-rshbg <number of concurrent execution>\fR
+Every commands will be spawned at 10 hosts simultaneously by default. This greatly speed up the speed of execution, but all the output will come out simultaneously. You can increase and decrease the default number of concurrent execution by using this option. This can als be specified in sce.conf at [scms] with configuration option "max_rshbg"
+.SH CONFIGURATION
+All commands read the configuration from [scms] section in sce.conf. Below are the list of configurable option for all commands.
+.TP
+\fBmax_rshbg\fR
+This has the same effect as \-\-sut\-max\-rshbg. For example, max_rshbg=20
+.TP
+\fBsut_hostlen\fR
+Change the position of character to trim hostname. The default position is 14. Change this in case of long hostname.
+
+.SH EXAMPLE
+.PP
+List the content of the file /etc/fstab on all node.
+
+.nf
+	pcat -a /etc/fstab
+.fi
+.PP
+Restart the xinetd daemon on all node except the current.
+
+.nf
+	pexec -e /sbin/service xinetd restart
+.fi
+.PP
+List the available ethernet interface on some node.
+
+.nf
+	pexec -h "myri<1-5>" /sbin/ifconfig -a
+.fi
+.PP
+Distribute the configuration file to all compute node
+
+.nf
+	pdist -h "compute.*" /etc/sce/sce.conf /etc/sce/
+.fi
+.PP
+Start/Stop service on all node, even the off-line node.
+
+.nf
+	pexec -aa /etc/init.d/snmpd restart
+.fi
+
+.SH AUTHOR
+.PP
+Written by Somsak Sriprayoonsakul <somsaks@gmail.com>, Sugree Pattanapherom 
+
+.SH REPORTING BUGS
+.PP
+Report bugs to <somsaks@gmail.com>
+
+.SH SEE ALSO
+.BR gstat (1)
+
+.SH REVISION 
+.PP
+$Id: pexec.1 10543 2005-09-20 17:25:43Z ssy $

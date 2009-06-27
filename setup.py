@@ -1,10 +1,10 @@
 # in case setuptools become default in RHEL
 from setuptools import setup, find_packages
-import os, glob, sys
+import os, glob, sys, re
 from distutils.core import setup
 
 name = 'scutools'
-version = '0.1'
+version = '0.2'
 
 setup(
     name = name,
@@ -18,6 +18,7 @@ setup(
 
     data_files = [
         ('share/doc/' + name + '-' + version, ['scutools.conf', 'COPYING']),
+        ('share/man/man1', ['man/pexec.1']),
     ],
 #    package_data = {
 #        # If any package contains *.txt or *.rst files, include them:

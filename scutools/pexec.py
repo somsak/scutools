@@ -9,7 +9,7 @@ import sys, string
 # SUT module
 from scutools import config, node
 # Exception
-from scutools.error import InvalArg,InvalHost
+from scutools.error import InvalArg,InvalHost,NodeStatus
 
 class PExec :
     "Generic interface to parallel command"
@@ -17,6 +17,7 @@ class PExec :
     HARG_EXCEPT = 2
     HARG_HOST = 3
     HARG_PART = 4
+    HARG_DOWN = 5
 
     def __init__(self, cmd, prog_args) :
         " Initialized internal variable "
@@ -52,6 +53,15 @@ class PExec :
                 if prog_args[0] == '-a' or\
                     prog_args[0] == '--all' :
                     self.hostarg = (self.HARG_ALL, None)
+                    del prog_args[0]
+                elif prog_args[0] == '-aa' or \
+                    prog_args[0] == '--really-all' :
+                    self.hostarg = (self.HARG_ALL, None)
+                    self.specarg['forceall'] = 1
+                    del prog_args[0]
+                elif prog_args[0] == '-d' or \
+                    prog_args[0] == '--down' :
+                    self.hostarg = (self.HARG_DOWN, None)
                     del prog_args[0]
                 elif prog_args[0] == '-e' or\
                     prog_args[0] == '--except' :
@@ -89,16 +99,23 @@ class PExec :
         flag = 0x0
         if self.hostarg[0] == self.HARG_EXCEPT :
             flag = flag | node.ALL_EXC
-        if self.specarg.has_key('forceall') :
+
+        if self.hostarg[0] == self.HARG_DOWN or self.specarg.has_key('forceall') :
             self.hostlist = node.get_alive(node.ALL | flag)
         else :
             self.hostlist = node.get_alive(node.ALIVE | flag)
-        
-        # Parse host argument
-        if self.hostarg[0] == self.HARG_ALL or self.hostarg[0] == self.HARG_EXCEPT :
-            # fetched nodelist is fine
-            pass
-        else :
+
+        if self.hostarg[0] == self.HARG_DOWN :
+            on_hostlist = node.get_alive(node.ALIVE | flag)
+            # exclude host that's in on-line hosts
+            real_hostlist = []
+            for host in self.hostlist :
+                if not host in on_hostlist :
+                    real_hostlist.append(host)
+            self.hostlist = real_hostlist
+                    
+        # Parse host argument, if needed
+        if self.hostarg[0] == self.HARG_HOST or self.hostarg[0] == self.HARG_PART :
             tmp_hostlist = []
             if self.hostarg[0] == self.HARG_PART :
                 import partfile
@@ -121,7 +138,11 @@ class PExec :
                         raise InvalHost, h
                 i = 0
                 while i < len(self.hostlist) :
-                    if ro.match(self.hostlist[i]) :
+                    # match the whole hostname
+                    m1 = ro.match(self.hostlist[i])
+                    # additionally match just short hostname
+                    m2 = ro.match(self.hostlist[i].split('.')[0])
+                    if m1 or m2 :
                         real_hostlist.append(self.hostlist[i])
                         del self.hostlist[i]
                     else :
@@ -138,10 +159,13 @@ class PExec :
 
         myaddr = socket.gethostbyname(socket.gethostname())
         for i in range(len(self.hostlist)) :
-            if socket.gethostbyname(self.hostlist[i]) is myaddr :
-                del self.hostlist[i]
-                self.hostlist.append(h)
-                break
+            try :
+                if socket.gethostbyname(self.hostlist[i]) is myaddr :
+                    del self.hostlist[i]
+                    self.hostlist.append(h)
+                    break
+            except socket.gaierror, e :
+                raise NodeStatus(self.hostlist[i])
 
     def launch(self, out = None, err = None) :
         """Execute the command, return the exit status"""

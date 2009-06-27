@@ -29,10 +29,11 @@ rcp_cmd = 'scp'
 rsync_cmd = 'rsync'
 max_rshbg = 10
 def_spawner = 'rsh'
-def_rdup = 'rcp'
+def_rdup = 'rsync'
 tmpdir = tempfile.gettempdir()
 sut_hostlen = 14
 hostlist_src = 'gstat'
+hostlist = []
 gstat = 'gstat'
 sce_host = 'sce_host'
 
@@ -50,5 +51,8 @@ try :
             sce_host = _config.get('main', 'sce_host')
         if _config.has_option('main', 'gstat') :
             gstat = _config.get('main', 'gstat')
+    if _config.has_section('hostlist') :
+        for option, value in _config.items('hostlist') :
+            hostlist.append(value)
 except :
     pass

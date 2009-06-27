@@ -14,7 +14,7 @@ ALL_EXC = 0x4
 
 class HostSrc(object) :
     def get_alive(flag) :
-        pass
+        return config.hostlist
 
 class ScmsHostSrc(HostSrc) :
     def get_alive(self, flag) :
@@ -28,14 +28,18 @@ class ScmsHostSrc(HostSrc) :
         cmd = config.sce_host + opt
         status, output = commands.getstatusoutput(cmd)
         if status == 0 :
-            return string.split(output)
+            host_list = string.split(output)
+            if (flag & ALL) or (flag & ALL_EXC) :
+                for host in HostSrc.get_alive(self) :
+                    if not host in host_list :
+                        host_list.append(host)
         else :
-            raise NodeStatus, 'sce_host'
+            raise NodeStatus, 'sce_host ' + opt
 
 class GstatHostSrc(HostSrc) :
     def get_alive(self, flag) :
-        gstat_cmd = os.popen(config.gstat + ' -a -m -l', 'r')
         host_list = []
+        gstat_cmd = os.popen(config.gstat + ' -a -m -l', 'r')
         while True :
             line = gstat_cmd.readline()
             if not line: break
@@ -54,10 +58,18 @@ class GstatHostSrc(HostSrc) :
                     break
                 else :
                     host, time = line.strip().split(' ', 1)
-                    host_list.append(host)
+                    # ganglia report short-hostname instead of full name
+                    hostent = socket.gethostbyname_ex(host)
+                    host_list.append(hostent[0])
             exit_stat = gstat_cmd.close()
             if not exit_stat is None :
                 raise NodeStatus, 'gstat -a -m -l'
+
+            # also use hostlist defined in configuration file
+            for host in HostSrc.get_alive(self) :
+                if not host in host_list :
+                    host_list.append(host)
+
         if (flag & ALL_EXC) :
             my_hostname = socket.gethostname()
             short_hostname = my_hostname.split('.', 1)[0]
