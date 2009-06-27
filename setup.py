@@ -51,7 +51,7 @@ setup(
     author_email = "somsaks@gmail.com",
     description = "Scalable Unix Tool packages",
     license = "GPLv3",
-    keywords = "cluster grid",
+    keywords = "cluster grid unix",
     url = "http://code.google.com/p/scutools",   # project home page, if any
 
     # could also include long_description, download_url, classifiers, etc.
