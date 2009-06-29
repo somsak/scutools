@@ -45,7 +45,7 @@ class PDist(PExec) :
         # Get spawner first
         spawner_arg = config.def_rdup
         if self.specarg.has_key('rdup') :
-            spawner_arg = self.specarg['rdup'][1]
+            spawner_arg = self.specarg['rdup']
         
         launcher = None
         if spawner_arg == 'rsync' :
