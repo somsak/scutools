@@ -7,7 +7,7 @@ from scutools import config
 from scutools.pexec import PExec
 from scutools.rdup import RcpBg,RsyncBg
 from scutools.rdup import Rdup
-from scutools.error import InvalArg
+from scutools.error import InvalArg,InvalLauncher
 
 class PDist(PExec) :
     def __init__(self, prog_args) :
