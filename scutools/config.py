@@ -51,6 +51,10 @@ try :
             sce_host = _config.get('main', 'sce_host')
         if _config.has_option('main', 'gstat') :
             gstat = _config.get('main', 'gstat')
+        if _config.has_option('main', 'rsh') :
+            rsh_cmd = _config.get('main', 'rsh')
+        if _config.has_option('main', 'rcp') :
+            rcp_cmd = _config.get('main', 'rcp')
     if _config.has_section('hostlist') :
         for option, value in _config.items('hostlist') :
             hostlist.append(value)
