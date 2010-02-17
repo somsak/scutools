@@ -120,14 +120,14 @@ Print number of host instead of of host name.
 .SH HOST SELECTING OPTIONS
 .PP
 All Scalable Unix Tools accept the same format of node selecting option. Note that, omitting the node selecting option means '-a' (Omitting the options = the first argument passed is not one of the node selecting option). The default operation for node selection is to apply only to the alive node, that is, the command will not be excuted on any down node even though specified. To force doing the command on down node, use
-.B --sut-forceall
+.B --scu-forceall
 option.
 
 .PP
 The node information is gather from
-.B cms_node(1)
+.B underlying resource monitoring system (such as Ganglia or SCMS)
 command. Specify the node outside the scope of
-.B 'cms_node -a'
+.B underlying resource monitoring
 won't have any effect.
 
 .TP

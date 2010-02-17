@@ -63,9 +63,19 @@ class PExec :
                     prog_args[0] == '--down' :
                     self.hostarg = (self.HARG_DOWN, None)
                     del prog_args[0]
+                elif prog_args[0] == '-da' or \
+                    prog_args[0] == '--down-all' :
+                    self.hostarg = (self.HARG_DOWN, None)
+                    self.specarg['forceall'] = 1
+                    del prog_args[0]
                 elif prog_args[0] == '-e' or\
                     prog_args[0] == '--except' :
                     self.hostarg = (self.HARG_EXCEPT, None)
+                    del prog_args[0]
+                elif prog_args[0] == '-ea' or\
+                    prog_args[0] == '--except-all' :
+                    self.hostarg = (self.HARG_EXCEPT, None)
+                    self.specarg['forceall'] = 1
                     del prog_args[0]
                 elif prog_args[0] == '-p' or\
                     prog_args[0] == '--part' :
@@ -73,11 +83,25 @@ class PExec :
                         raise InvalArg, 'host needed'
                     self.hostarg = (self.HARG_PART, prog_args[1])
                     del prog_args[0:2]
+                elif prog_args[0] == '-pa' or\
+                    prog_args[0] == '--part-all' :
+                    if len(prog_args) < 2 :
+                        raise InvalArg, 'host needed'
+                    self.hostarg = (self.HARG_PART, prog_args[1])
+                    self.specarg['forceall'] = 1
+                    del prog_args[0:2]
                 elif prog_args[0] == '-h' or\
                     prog_args[0] == '--host' :
                     if len(prog_args) < 2 :
                         raise InvalArg, 'host needed'
                     self.hostarg = (self.HARG_HOST, prog_args[1])
+                    del prog_args[0:2]
+                elif prog_args[0] == '-ha' or\
+                    prog_args[0] == '--host-all' :
+                    if len(prog_args) < 2 :
+                        raise InvalArg, 'host needed'
+                    self.hostarg = (self.HARG_HOST, prog_args[1])
+                    self.specarg['forceall'] = 1
                     del prog_args[0:2]
             except IndexError :
                 pass
@@ -180,7 +204,12 @@ class PExec :
             launcher = spawner.RshBg(self.specarg)
         else :
             raise InvalLauncher(spawner_arg)
-        return launcher.spawn(self.hostlist, self.cmd, self.cmd_args, out, err)
+
+        if not self.cmd and not self.cmd_args :
+            raise InvalArg('')
+
+        retval = launcher.spawn(self.hostlist, self.cmd, self.cmd_args, out, err)
+        return retval
         
 if __name__ == '__main__' :
     cmd = PExec(sys.argv[1], sys.argv[2:])

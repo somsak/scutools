@@ -36,6 +36,8 @@ hostlist_src = 'gstat'
 hostlist = []
 gstat = 'gstat'
 sce_host = 'sce_host'
+ping = '/bin/ping'
+ping_check = False
 
 try :
     _config = ConfigParser()
@@ -55,6 +57,12 @@ try :
             rsh_cmd = _config.get('main', 'rsh')
         if _config.has_option('main', 'rcp') :
             rcp_cmd = _config.get('main', 'rcp')
+        if _config.has_option('main', 'ping') :
+            ping = _config.get('main', 'ping')
+        if _config.has_option('main', 'ping_check') :
+            ping_check = _config.get('main', 'ping_check')
+            if ping_check == '1' or ping_check == 'true' or ping_check == 'yes' :
+                ping_check = True
     if _config.has_section('hostlist') :
         for option, value in _config.items('hostlist') :
             hostlist.append(value)

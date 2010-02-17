@@ -13,7 +13,7 @@ ALL = 0x2
 ALL_EXC = 0x4
 
 class HostSrc(object) :
-    def get_alive(flag) :
+    def get_alive(self, flag) :
         return config.hostlist
 
 class ScmsHostSrc(HostSrc) :
@@ -84,6 +84,8 @@ def get_alive(flag = ALIVE) :
         host_src = GstatHostSrc()
     elif config.hostlist_src == 'sce_host' :
         host_src = ScmsHostSrc()
+    elif config.hostlist_src == 'file' :
+        host_src = HostSrc()
 
     return host_src.get_alive(flag)
 
