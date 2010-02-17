@@ -1,20 +1,29 @@
 """
 Generic Utility
 
-@author Somsak Sriprayoonsakul
+@author Somsak Sriprayoonsakul <somsaks@gmail.com>
 """
 
-import string
-import scutools.config
+import config
 
-sut_hostlen = scutools.config.sut_hostlen
+sut_hostlen = config.sut_hostlen
 
 def trim_host(host) :
     """Trim down hostname to only host, no domain"""
-    out = string.split(host, '.', 1)[0]
+    out = host.split('.', 1)[0]
     if len(out) > sut_hostlen :
         out = out[:sut_hostlen]
     return out
+
+def ping_check(host) :
+    '''
+    Check status of a host with ping
+    '''
+    null = open('/dev/null', 'w')
+    retcode = subprocess.call([config.ping, '-c', '1', '-W', '1', host], stdout = null, stderr = subprocess.STDOUT)
+    null.close()
+
+    return retcode
 
 if __name__ == '__main__' :
     import socket, sys

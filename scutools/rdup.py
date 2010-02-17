@@ -1,10 +1,13 @@
 """
 Interface for remote copy
 
-@author Somsak Sriprayoonsakul
+@author Somsak Sriprayoonsakul <somsaks@gmail.com>
 """
 
 import os
+
+import config
+from util import ping_check
 
 class Rdup :
     PRESERVE_PERM = 0x01
@@ -31,6 +34,9 @@ class RcpBg(Rdup, BgfSpawner) :
         Input arg are assume to be in order (by external pdist
         class). Last argument is always destination
         """
+        if config.ping_check and ping_check(host) != 0 :
+            return ['echo', 'down']
+
         spawn_arg = [config.rcp_cmd]
         last_idx = len(args) - 1
         args[last_idx] = host + ':' + args[last_idx]
@@ -64,6 +70,10 @@ class RsyncBg(Rdup, BgfSpawner) :
         Input arg are assume to be in order (by external pdist
         class). Last argument is always destination
         """
+
+        if config.ping_check and ping_check(host) != 0 :
+            return ['echo', 'down']
+
         spawn_arg = [config.rsync_cmd]
         last_idx = len(args) - 1
         args[last_idx] = host + ':' + args[last_idx]

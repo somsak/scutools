@@ -6,6 +6,8 @@ Generic interface for SUT spawner
 
 import subprocess
 
+from util import ping_check
+
 class Spawner :
     def __init__(self, special_arg) :
         """
@@ -124,13 +126,8 @@ class RshBg(BgfSpawner) :
         BgfSpawner.__init__(self, special_arg)
 
     def buildArg(self, host, cmd, args) :
-        if config.ping_check :
-            null = open('/dev/null', 'w')
-            retcode = subprocess.call([config.ping, '-c', '1', '-W', '1', host], stdout = null, stderr = subprocess.STDOUT)
-            null.close()
-
-            if retcode != 0 :
-                return ['echo', 'down']
+        if config.ping_check and ping_check(host) != 0 :
+            return ['echo', 'down']
 
         spawn_arg = [config.rsh_cmd, host]
             
