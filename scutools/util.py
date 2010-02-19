@@ -4,7 +4,7 @@ Generic Utility
 @author Somsak Sriprayoonsakul <somsaks@gmail.com>
 """
 
-import config
+import config, subprocess
 
 sut_hostlen = config.sut_hostlen
 

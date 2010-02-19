@@ -80,8 +80,8 @@ class BgfSpawner(Spawner) :
         while hostlist :
             if count < config.max_rshbg :
                 # Fork and exec command
-                tmpout = tempfile.mktemp()
-                tmperr = tempfile.mktemp()
+                tmpout = tempfile.mkstemp()
+                tmperr = tempfile.mkstemp()
                 pid = os.fork()
                 if pid == 0 :
                     # child
