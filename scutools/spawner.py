@@ -80,21 +80,19 @@ class BgfSpawner(Spawner) :
         while hostlist :
             if count < config.max_rshbg :
                 # Fork and exec command
-                ofd, tmpout = tempfile.mkstemp()
-                efd, tmperr = tempfile.mkstemp()
+                outfd, tmpout = tempfile.mkstemp()
+                errfd, tmperr = tempfile.mkstemp()
                 pid = os.fork()
                 if pid == 0 :
                     # child
                     sys.stdin.close()
-                    outfd = os.fdopen(ofd, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0700)
-                    errfd = os.fdopen(efd, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0700)
                     os.dup2(outfd, sys.stdout.fileno())
                     os.dup2(errfd, sys.stderr.fileno())
                     spawn_arg = self.buildArg(hostlist[0], cmd, args)
                     os.execvp(spawn_arg[0], spawn_arg)
                 else :
-                    os.close(ofd)
-                    os.close(efd)
+                    os.close(outfd)
+                    os.close(errfd)
                     pid_list[pid] = (tmpout, tmperr, hostlist[0])
                     
                 count = count + 1
