@@ -129,7 +129,7 @@ class RshBg(BgfSpawner) :
         if config.ping_check and ping_check(host) != 0 :
             return ['echo', 'down']
 
-        if os.path.basename(config.rsh_cmd) == 'ssh'
+        if os.path.basename(config.rsh_cmd) == 'ssh' :
             spawn_arg = [config.rsh_cmd, '-o', 'StrictHostKeyChecking no', host]
         else :
             spawn_arg = [config.rsh_cmd, host]
