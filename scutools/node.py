@@ -13,7 +13,7 @@ ALL = 0x2
 ALL_EXC = 0x4
 
 class HostSrc(object) :
-    def get_alive(self, flag) :
+    def get_alive(self, flag = None) :
         return config.hostlist
 
 class ScmsHostSrc(HostSrc) :
