@@ -9,6 +9,8 @@ import sys, string, os
 import config, node
 from error import *
 
+import spawner
+
 class PExec :
     "Generic interface to parallel command"
     HARG_ALL = 1
@@ -200,7 +202,6 @@ class PExec :
         
         launcher = None
         if spawner_arg == 'rsh' :
-            import spawner
             launcher = spawner.RshBg(self.specarg)
         else :
             raise InvalLauncher(spawner_arg)

@@ -4,9 +4,17 @@ Generic interface for SUT spawner
 @author Somsak Sriprayoonsakul <somsaks@gmail.com>
 """
 
+import sys,os,tempfile,string
 import subprocess
 
+import config, util
 from util import ping_check
+
+try :
+    import paramiko
+    has_paramiko = True
+except ImportError :
+    has_paramiko = False
 
 class Spawner :
     def __init__(self, special_arg) :
@@ -29,12 +37,47 @@ class Spawner :
         @param args command argument
         @param out output file object
         @param err error file object
-        @return 0 if none task fail, otherwise -1
+        @return 0 if no task fail, otherwise -1
         """
         pass
 
-import sys,os,tempfile,string
-from  scutools import config, util
+if has_paramiko :
+    class SshSpawner(Spawner) :
+        def __init__(self, special-arg) :
+            """
+            Initialized generic spawner
+            
+            @param special_arg special argument of SUT
+            """
+            Spawner.__init__(self, special_arg)
+            try :
+                config.max_rshbg = special_arg['max-rshbg']
+                if config.max_rshbg < 1 :
+                    config.max_rshbg = 1
+            except KeyError:
+                pass
+
+            # create pool of SshClient equal to number of rshbg
+
+
+        def spawn(self, hostlist, cmd, args, out = None, err = None) :
+            """
+            Spawn the command
+
+            @param hostlist list of host to spawn task
+            @param cmd command name
+            @param args command argument
+            @param out output file object
+            @param err error file object
+            @return 0 if no task fail, otherwise -1
+            """
+            pass
+
+            
+else :
+    class SshSpawner(Spawner) :
+        def __init__(self, special_arg) :
+            raise InvalLauncher('python-paramiko ssh API is not available')
 
 class BgfSpawner(Spawner) :
     """
