@@ -58,6 +58,7 @@ if has_paramiko :
                 pass
 
             # create pool of SshClient equal to number of rshbg
+            asdf
 
 
         def spawn(self, hostlist, cmd, args, out = None, err = None) :

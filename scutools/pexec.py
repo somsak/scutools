@@ -149,6 +149,7 @@ class PExec :
             elif self.hostarg[0] == self.HARG_HOST :
                 tmp_hostlist = string.split(self.hostarg[1], ',')
             # Treat each line as REGEX
+            #
             real_hostlist = []
             import xre
             while tmp_hostlist :
