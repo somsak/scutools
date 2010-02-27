@@ -15,6 +15,7 @@ conf_dir_list = [\
     '/usr/etc/scutools',
     '/usr/local/etc/scutools',
 ]
+partfile_dir = ''
 
 for dir in conf_dir_list :
     full_path = os.path.join(dir, conf_name)

@@ -130,7 +130,7 @@ class RshBg(BgfSpawner) :
             return ['echo', 'down']
 
         if os.path.basename(config.rsh_cmd) == 'ssh' :
-            spawn_arg = [config.rsh_cmd, '-o', 'StrictHostKeyChecking no', host]
+            spawn_arg = [config.rsh_cmd, '-o', 'StrictHostKeyChecking no', '-T', '-n', host]
         else :
             spawn_arg = [config.rsh_cmd, host]
             

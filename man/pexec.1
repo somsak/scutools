@@ -119,9 +119,14 @@ Print number of host instead of of host name.
 
 .SH HOST SELECTING OPTIONS
 .PP
-All Scalable Unix Tools accept the same format of node selecting option. Note that, omitting the node selecting option means '-a' (Omitting the options = the first argument passed is not one of the node selecting option). The default operation for node selection is to apply only to the alive node, that is, the command will not be excuted on any down node even though specified. To force doing the command on down node, use
+All Scalable Unix Tools accept the same format of node selecting option. Note that, omitting the node selecting option means '-a' (Omitting the options = the first argument passed is not one of the node selecting option). The default operation for node selection is to apply only to the alive node, that is, the command will not be excuted on any down node even though specified. To force doing the command on down node, use either
 .B --scu-forceall
-option.
+option or one of
+.B -aa,
+.B -ea,
+.B -ha
+.B -pa,
+options.
 
 .PP
 The node information is gather from
@@ -140,14 +145,23 @@ select all node, including off-line nodes.
 \fB\-e\fR
 select all node EXCEPT the current node (The node that invoke the command).
 .TP
+\fB\-ea\fR
+select all node EXCEPT the current node (The node that invoke the command), including off-line nodes.
+.TP
 \fB\-d\fR
 select only off-line nodes.
 .TP
 \fB\-h <node specification>\fR
 specify the list of node in argument. The list of node must be in node specificatino format describe in the next section.
 .TP
+\fB\-ha <node specification>\fR
+like -h, but also including off-line nodes.
+.TP
 \fB\-p <partition>\fR
 read the list of node from file <partition>. It is possible to pre-define the partition file by placing the file in directory your_sysconf_dir/scutools/part (eg. /etc/scutools/part). All SUT command read partition from the pre-defined file first, then trying to open it from the current directory. The format of the partition must correspond to the partition file format describe below.
+.TP
+\fB\-pa <partition>\fR
+Like -p, read the list of node from file <partition>, including off-line nodes.
 
 .SH HOST SPECIFICATION FORMAT
 .PP
@@ -164,7 +178,7 @@ executes the command 'hostname' on the frontend plus the node which name precede
 Since the regular expression processing is base on the character, there is an extended syntax for the regular expression to support the numbering range using '<' and '>'. For example
 
 .nf
-	pexec -h compute<20-100> hostname
+	pexec -h 'compute<20-100>' hostname
 .fi
 
 .PP

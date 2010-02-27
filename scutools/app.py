@@ -4,6 +4,11 @@
     @author Somsak Sriprayoonsakul <somsaks@gmail.com>
 '''
 import sys,os
+
+
+from pexec import PExec
+from error import *
+
 global progname
 progname = os.path.basename(sys.argv[0])
 
@@ -11,8 +16,6 @@ def print_error(errstr) :
     sys.stderr.write('%s:%s\n' % (progname, errstr))
 
 def main() :
-    from scutools.pexec import PExec
-    from scutools.error import InvalArg,NodeStatus,InvalHost
 
     execer = None
 
@@ -65,6 +68,8 @@ def main() :
             sys.exit(1)
         retval = execer.launch()
         sys.exit(retval)
+    except NoError, e :
+        pass
     except (NodeStatus, InvalHost, InvalArg), e :
         print_error(e)
     except KeyboardInterrupt, e :

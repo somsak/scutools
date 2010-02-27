@@ -4,12 +4,10 @@ Generic SUT interface
 @author Somsak Sriprayoonsakul
 """
 
-import sys, string
+import sys, string, os
 
-# SUT module
-from scutools import config, node
-# Exception
-from scutools.error import InvalArg,InvalHost,NodeStatus
+import config, node
+from error import *
 
 class PExec :
     "Generic interface to parallel command"
@@ -50,6 +48,10 @@ class PExec :
             # now host option
             try :
                 self.hostarg = (self.HARG_ALL, None)
+                if prog_args[0] == '--help' :
+                    # this is special case, since --help is the first command which is not very likely to happen
+                    if len(prog_args) < 2 :
+                        raise InvalArg, 'try man pexec'
                 if prog_args[0] == '-a' or\
                     prog_args[0] == '--all' :
                     self.hostarg = (self.HARG_ALL, None)
@@ -61,10 +63,6 @@ class PExec :
                     del prog_args[0]
                 elif prog_args[0] == '-d' or \
                     prog_args[0] == '--down' :
-                    self.hostarg = (self.HARG_DOWN, None)
-                    del prog_args[0]
-                elif prog_args[0] == '-da' or \
-                    prog_args[0] == '--down-all' :
                     self.hostarg = (self.HARG_DOWN, None)
                     self.specarg['forceall'] = 1
                     del prog_args[0]
@@ -80,26 +78,28 @@ class PExec :
                 elif prog_args[0] == '-p' or\
                     prog_args[0] == '--part' :
                     if len(prog_args) < 2 :
-                        raise InvalArg, 'host needed'
+                        self.listPart()
+                        raise NoError
                     self.hostarg = (self.HARG_PART, prog_args[1])
                     del prog_args[0:2]
                 elif prog_args[0] == '-pa' or\
                     prog_args[0] == '--part-all' :
                     if len(prog_args) < 2 :
-                        raise InvalArg, 'host needed'
+                        self.listPart()
+                        raise NoError
                     self.hostarg = (self.HARG_PART, prog_args[1])
                     self.specarg['forceall'] = 1
                     del prog_args[0:2]
                 elif prog_args[0] == '-h' or\
                     prog_args[0] == '--host' :
                     if len(prog_args) < 2 :
-                        raise InvalArg, 'host needed'
+                        raise InvalArg, 'need at least one host pattern, such as \'compute.*\''
                     self.hostarg = (self.HARG_HOST, prog_args[1])
                     del prog_args[0:2]
                 elif prog_args[0] == '-ha' or\
                     prog_args[0] == '--host-all' :
                     if len(prog_args) < 2 :
-                        raise InvalArg, 'host needed'
+                        raise InvalArg, 'need at least one host pattern, such as \'compute<0-9>\''
                     self.hostarg = (self.HARG_HOST, prog_args[1])
                     self.specarg['forceall'] = 1
                     del prog_args[0:2]
@@ -210,6 +210,15 @@ class PExec :
 
         retval = launcher.spawn(self.hostlist, self.cmd, self.cmd_args, out, err)
         return retval
+
+    def listPart(self) :
+        """List partition file available on the system"""
+        if config.partfile_dir :
+            print 'Part available in this host are:'
+            for file in os.listdir(config.partfile_dir) :
+                path = os.path.join(config.partfile_dir, file)
+                if os.path.isfile(path) :
+                    print file
         
 if __name__ == '__main__' :
     cmd = PExec(sys.argv[1], sys.argv[2:])

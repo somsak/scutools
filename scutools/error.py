@@ -38,3 +38,13 @@ class InvalLauncher(Exception) :
 
     def __str__(self) :
         return self.value
+
+class NoError(Exception) :
+    "Exception which is actually no exception (!?)"
+    def __inti__(self, dontcare = None) :
+        self.value = ''
+
+    def __str__(self) :
+        return ''
+
+
