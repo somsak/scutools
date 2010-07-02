@@ -13,7 +13,7 @@ from util import ping_check
 
 try :
     import paramiko
-    has_paramiko = True
+    has_paramiko = False
 except ImportError :
     has_paramiko = False
 
