@@ -6,7 +6,7 @@ Generic interface for SUT spawner
 
 import sys,os,tempfile,string,select,tempfile
 from select import POLLIN, POLLOUT
-import subprocess
+#import subprocess
 
 import config, util
 from util import ping_check
