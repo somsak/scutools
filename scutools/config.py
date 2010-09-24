@@ -38,6 +38,7 @@ hostlist = []
 gstat = 'gstat'
 sce_host = 'sce_host'
 ping = '/bin/ping'
+ping_args = '-c 1 -W 1'
 ping_check = False
 
 try :
@@ -60,6 +61,8 @@ try :
             rcp_cmd = _config.get('main', 'rcp')
         if _config.has_option('main', 'ping') :
             ping = _config.get('main', 'ping')
+        if _config.has_option('main', 'ping_args') :
+            ping_args = _config.get('main', 'ping_args')
         if _config.has_option('main', 'ping_check') :
             ping_check = _config.get('main', 'ping_check')
             if ping_check == '1' or ping_check == 'true' or ping_check == 'yes' :
