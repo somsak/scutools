@@ -59,6 +59,14 @@ try :
             rsh_cmd = _config.get('main', 'rsh')
         if _config.has_option('main', 'rcp') :
             rcp_cmd = _config.get('main', 'rcp')
+        if _config.has_option('main', 'rsync') :
+            rsync_cmd = _config.get('main', 'rsync')
+        if _config.has_option('main', 'use_rsync') :
+            val = _config.get('main', 'use_rsync').lower()
+            if val == 'yes' or val == 'true' :
+                def_rdup = 'rsync'
+            else :
+                def_rdup = 'rcp'
         if _config.has_option('main', 'ping') :
             ping = _config.get('main', 'ping')
         if _config.has_option('main', 'ping_args') :
