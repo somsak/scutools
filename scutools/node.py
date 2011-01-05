@@ -14,7 +14,16 @@ ALL_EXC = 0x4
 
 class HostSrc(object) :
     def get_alive(self, flag = None) :
-        return config.hostlist
+        host_list = config.hostlist
+        if (flag & ALL_EXC) :
+            my_hostname = socket.gethostname()
+            short_hostname = my_hostname.split('.', 1)[0]
+            for i in range(len(host_list)) :
+                if (host_list[i] == my_hostname) or (host_list[i].split('.', 1)[0] == short_hostname) :
+                    del host_list[i]
+                    break
+
+        return host_list
 
 class ScmsHostSrc(HostSrc) :
     def get_alive(self, flag) :
