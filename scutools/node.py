@@ -15,7 +15,7 @@ ALL_EXC = 0x4
 class HostSrc(object) :
     def get_alive(self, flag = None) :
         host_list = config.hostlist
-        if (flag & ALL_EXC) :
+        if flag and (flag & ALL_EXC) :
             my_hostname = socket.gethostname()
             short_hostname = my_hostname.split('.', 1)[0]
             for i in range(len(host_list)) :
@@ -29,10 +29,10 @@ class ScmsHostSrc(HostSrc) :
     def get_alive(self, flag) :
         cmd = None
         opt = ''
-        if (flag & ALL) :
+        if flag and (flag & ALL) :
             # get only alive node
             opt = opt + ' -a'
-        if (flag & ALL_EXC) :
+        if flag and (flag & ALL_EXC) :
             opt = opt + ' -e'
         cmd = config.sce_host + opt
         status, output = commands.getstatusoutput(cmd)
@@ -58,7 +58,7 @@ class GstatHostSrc(HostSrc) :
         if not exit_stat is None :
             raise NodeStatus, 'gstat -a -m -l'
 
-        if (flag & ALL) :
+        if flag and (flag & ALL) :
             gstat_cmd = os.popen(config.gstat + ' -d -1 -l', 'r')
             while True :
                 line = gstat_cmd.readline()
@@ -79,7 +79,7 @@ class GstatHostSrc(HostSrc) :
                 if not host in host_list :
                     host_list.append(host)
 
-        if (flag & ALL_EXC) :
+        if flag and (flag & ALL_EXC) :
             my_hostname = socket.gethostname()
             short_hostname = my_hostname.split('.', 1)[0]
             for i in range(len(host_list)) :
@@ -96,7 +96,7 @@ def get_alive(flag = ALIVE) :
     elif config.hostlist_src == 'file' :
         host_src = HostSrc()
 
-    return host_src.get_alive(flag)
+    return host_src.get_alive(flag = flag)
 
 if __name__ == '__main__' :
     print '*** alive nodes ***'
