@@ -40,6 +40,7 @@ sce_host = 'sce_host'
 ping = '/bin/ping'
 ping_args = '-c 1 -W 1'
 ping_check = False
+default_host_arg = None
 
 try :
     _config = ConfigParser()
@@ -75,6 +76,8 @@ try :
             ping_check = _config.get('main', 'ping_check')
             if ping_check == '1' or ping_check == 'true' or ping_check == 'yes' :
                 ping_check = True
+        if _config.has_option('main', 'default_host_arg') :
+            default_host_arg = _config.get('main', 'default_host_arg')
     if _config.has_section('hostlist') :
         for option, value in _config.items('hostlist') :
             hostlist.append(value)

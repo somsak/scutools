@@ -49,7 +49,18 @@ class PExec :
                     i = i + 1
             # now host option
             try :
-                self.hostarg = (self.HARG_ALL, None)
+                if not config.default_host_arg is None :
+                    arg = config.default_host_arg.strip()
+                    if arg.startswith('-a') :
+                        self.hostarg = (self.HARG_ALL, None)
+                    elif arg.startswith('-p') :
+                        part_file = arg.split(None, 1)[1]
+                        self.hostarg = (self.HARG_PART, part_file)
+                    elif arg.startswith('-h') :
+                        host = arg.split(None, 1)[1]
+                        self.hostarg = (self.HARG_HOST, host)
+                else :
+                    self.hostarg = (self.HARG_ALL, None)
                 if prog_args[0] == '--help' :
                     # this is special case, since --help is the first command which is not very likely to happen
                     if len(prog_args) < 2 :
