@@ -19,8 +19,8 @@ def part_read(arg) :
 			f = open(config.partfile_dir + os.sep + arg, 'r')
 		except IOError :
 			f = open(arg, 'r')
-		finally :
-			raise InvalArg('Invalid part specified:' + arg)
+		except Exception, e :
+			raise e
 		lines = f.readlines()
 		f.close
 		for i in lines :

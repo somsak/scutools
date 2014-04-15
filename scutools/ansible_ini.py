@@ -253,20 +253,20 @@ class InventoryParser(object):
                         # we didn't support port in scutools!
                         host = hn
                         self.hosts[hn] = host
-                    if len(tokens) > 1:
-                        for t in tokens[1:]:
-                            if t.startswith('#'):
-                                break
-                            try:
-                                (k,v) = t.split("=", 1)
-                            except ValueError, e:
-                                raise InvalArg("Invalid ini entry: %s - %s" % (t, str(e)))
-                            try:
-                                host.set_variable(k,ast.literal_eval(v))
-                            except:
-                                # most likely a string that literal_eval
-                                # doesn't like, so just set it
-                                host.set_variable(k,v)
+#                     if len(tokens) > 1:
+#                         for t in tokens[1:]:
+#                             if t.startswith('#'):
+#                                 break
+#                             try:
+#                                 (k,v) = t.split("=", 1)
+#                             except ValueError, e:
+#                                 raise InvalArg("Invalid ini entry: %s - %s" % (t, str(e)))
+#                             try:
+#                                 host.set_variable(k,ast.literal_eval(v))
+#                             except:
+#                                 # most likely a string that literal_eval
+#                                 # doesn't like, so just set it
+#                                 host.set_variable(k,v)
                     self.groups[active_group_name].add_host(host)
 
     # [southeast:children]
