@@ -18,8 +18,8 @@ setup(
 #    install_requires = ['docutils >= 0.3'],
 
     data_files = [
-        ('share/doc/' + name + '-' + version, ['scutools.conf', 'COPYING']),
-        ('share/man/man1', ['man/pexec.1']),
+#        ('share/doc/' + name + '-' + version, ['scutools.conf', 'COPYING']),
+#        ('share/man/man1', ['man/pexec.1']),
     ],
 #    package_data = {
 #        # If any package contains *.txt or *.rst files, include them:
