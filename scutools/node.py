@@ -7,10 +7,13 @@
 import os, sys, commands, string, socket
 from scutools import config
 from scutools.error import NodeStatus
+from scutools.ansible_ini import InventoryParser
 
 ALIVE = 0x1
 ALL = 0x2
 ALL_EXC = 0x4
+
+ansible_ini = None
 
 class HostSrc(object) :
     def get_alive(self, flag = None) :
@@ -24,6 +27,15 @@ class HostSrc(object) :
                     break
 
         return host_list
+
+class AnsibleHostSrc(HostSrc):
+    def get_alive(self, flag = None):
+        if not os.access(config.ansible_hosts, os.R_OK) :
+            raise NodeStatus, 'can not access ansible host list at ' + config.ansible_hosts
+        global ansible_ini
+        ansible_ini = InventoryParser(filename=config.ansible_hosts)
+        
+        return ansible_ini.get_hosts()
 
 class ScmsHostSrc(HostSrc) :
     def get_alive(self, flag) :
@@ -95,6 +107,8 @@ def get_alive(flag = ALIVE) :
         host_src = ScmsHostSrc()
     elif config.hostlist_src == 'file' :
         host_src = HostSrc()
+    elif config.hostlist_src == 'ansible' :
+        host_src = AnsibleHostSrc()
 
     return host_src.get_alive(flag = flag)
 

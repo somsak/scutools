@@ -199,10 +199,11 @@ class PExec :
         for i in range(len(self.hostlist)) :
             try :
                 if socket.gethostbyname(self.hostlist[i]) is myaddr :
+                    h = self.hostlist[i]
                     del self.hostlist[i]
                     self.hostlist.append(h)
                     break
-            except socket.gaierror, e :
+            except socket.gaierror :
                 raise NodeStatus(self.hostlist[i])
 
     def launch(self, out = None, err = None) :

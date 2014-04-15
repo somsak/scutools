@@ -33,7 +33,7 @@ def_spawner = 'rsh'
 def_rdup = 'rsync'
 tmpdir = tempfile.gettempdir()
 sut_hostlen = 14
-hostlist_src = 'gstat'
+hostlist_src = 'file'
 hostlist = []
 gstat = 'gstat'
 sce_host = 'sce_host'
@@ -41,6 +41,8 @@ ping = '/bin/ping'
 ping_args = '-c 1 -W 1'
 ping_check = False
 default_host_arg = None
+
+ansible_hosts = '/etc/ansible/hosts'
 
 try :
     _config = ConfigParser()
@@ -78,6 +80,8 @@ try :
                 ping_check = True
         if _config.has_option('main', 'default_host_arg') :
             default_host_arg = _config.get('main', 'default_host_arg')
+        if _config.has_option('main', 'ansible_hosts') :
+            ansible_hosts = _config.get('main', 'ansible_hosts')
     if _config.has_section('hostlist') :
         for option, value in _config.items('hostlist') :
             hostlist.append(value)
