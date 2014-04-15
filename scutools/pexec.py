@@ -227,12 +227,16 @@ class PExec :
 
     def listPart(self) :
         """List partition file available on the system"""
-        if config.partfile_dir :
-            print 'Part available in this host are:'
-            for file in os.listdir(config.partfile_dir) :
-                path = os.path.join(config.partfile_dir, file)
-                if os.path.isfile(path) :
-                    print file
+        if config.hostlist_src != 'ansible' :
+            if config.partfile_dir :
+                print 'Part available in this host are:'
+                for f in os.listdir(config.partfile_dir) :
+                    path = os.path.join(config.partfile_dir, f)
+                    if os.path.isfile(path) :
+                        print f
+        else :
+            for item in node.ansible_ini.groups.iterkeys() :
+                print item
         
 if __name__ == '__main__' :
     cmd = PExec(sys.argv[1], sys.argv[2:])

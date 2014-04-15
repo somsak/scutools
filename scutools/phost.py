@@ -26,8 +26,8 @@ class Phost(PExec) :
             for host in self.hostlist :
                 print host
 
-if __name__ == '__main__' :
-    cmd = Ptest(['-a', '-f', '/etc/passwd'])
-    print cmd.launch()
-    cmd = Ptest(['-a', '-f', '/etc/pass'])
-    print cmd.launch()
+# if __name__ == '__main__' :
+#     cmd = Ptest(['-a', '-f', '/etc/passwd'])
+#     print cmd.launch()
+#     cmd = Ptest(['-a', '-f', '/etc/pass'])
+#     print cmd.launch()
