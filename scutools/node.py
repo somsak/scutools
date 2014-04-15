@@ -30,8 +30,6 @@ class HostSrc(object) :
 
 class AnsibleHostSrc(HostSrc):
     def get_alive(self, flag = None):
-        if not os.access(config.ansible_hosts, os.R_OK) :
-            raise NodeStatus, 'can not access ansible host list at ' + config.ansible_hosts
         global ansible_ini
         ansible_ini = InventoryParser(filename=config.ansible_hosts)
         

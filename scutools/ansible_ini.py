@@ -169,7 +169,8 @@ class InventoryParser(object):
     """
 
     def __init__(self, filename=config.ansible_hosts):
-
+        if not os.access(config.ansible_hosts, os.R_OK) :
+            raise InvalArg('can not access ansible host list at ' + config.ansible_hosts)
         fh = open(filename, "r")
         self.lines = fh.readlines()
         fh.close()

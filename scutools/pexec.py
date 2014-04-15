@@ -8,6 +8,7 @@ import sys, string, os
 
 import config, node
 from error import *
+from ansible_ini import InventoryParser
 
 import spawner
 
@@ -235,7 +236,8 @@ class PExec :
                     if os.path.isfile(path) :
                         print f
         else :
-            for item in node.ansible_ini.groups.iterkeys() :
+            ansible_ini = InventoryParser(filename=config.ansible_hosts)
+            for item in ansible_ini.groups.iterkeys() :
                 print item
         
 if __name__ == '__main__' :
