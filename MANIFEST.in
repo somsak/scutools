@@ -1,1 +1,1 @@
-scutools/scutools.conf
+include scutools.conf COPYING man/*
