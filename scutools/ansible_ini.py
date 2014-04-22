@@ -150,6 +150,9 @@ class Group(object):
         self._hosts[host] = 1
     
     def get_hosts(self):
+        for name, group in self._groups.iteritems() :
+            for host in group.get_hosts() :
+                self._hosts[host] = 1
         return self._hosts.keys()
     
     def get_groups(self):
@@ -157,20 +160,15 @@ class Group(object):
     
     def __repr__(self):
         return 'Groups=' + str(self.get_groups()) + ', Hosts=' + str(self.get_hosts())
-    
-    def update(self):
-        for name, group in self._groups.iteritems() :
-            for host in group.get_hosts() :
-                self._hosts[host] = 1
 
 class InventoryParser(object):
     """
     Host inventory for ansible.
     """
 
-    def __init__(self, filename=config.ansible_hosts):
-        if not os.access(config.ansible_hosts, os.R_OK) :
-            raise InvalArg('can not access ansible host list at ' + config.ansible_hosts)
+    def __init__(self, filename = config.ansible_hosts):
+        if not os.access(filename, os.R_OK) :
+            raise InvalArg('can not access ansible host list at ' + filename)
         fh = open(filename, "r")
         self.lines = fh.readlines()
         fh.close()
@@ -182,8 +180,6 @@ class InventoryParser(object):
 
         self._parse_base_groups()
         self._parse_group_children()
-        for name, group in self.groups.iteritems() :
-            group.update()
         return self.groups
 
 
@@ -301,13 +297,13 @@ class InventoryParser(object):
         return self.hosts.keys()
                     
 if __name__ == '__main__' :
-    ip = InventoryParser(sys.argv[1])
+    ip = InventoryParser(filename=sys.argv[1])
     
     print '--- Group ---'
-    print ip.groups
-    print '--- All Group ---'
-    print ip.groups['all']
-    print '--- Ungrouped Group ---'
-    print ip.groups['ungrouped']
-    print '--- Host ---'
-    print ip.get_hosts()
+    print ip.groups['httpserver']
+#     print '--- All Group ---'
+#     print ip.groups['all']
+#     print '--- Ungrouped Group ---'
+#     print ip.groups['ungrouped']
+#     print '--- Host ---'
+#     print ip.get_hosts()
