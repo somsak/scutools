@@ -5,7 +5,7 @@ from distutils.core import setup
 import distutils.sysconfig
 
 name = 'scutools'
-version = '0.5'
+version = '0.6'
 
 setup(
     name = name,
