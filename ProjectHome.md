@@ -1,0 +1,1 @@
+This project implement a set of basic UNIX command to run on multiple computers, aka. "parallel commands" or "scalable unix tools", usually used in Clustering platform.
