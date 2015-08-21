@@ -205,7 +205,9 @@ class PExec :
                     self.hostlist.append(h)
                     break
             except socket.gaierror :
-                raise NodeStatus(self.hostlist[i])
+# in case we have orphaned, non-DNS host
+#                raise NodeStatus(self.hostlist[i])
+                pass
 
     def launch(self, out = None, err = None) :
         """Execute the command, return the exit status"""
