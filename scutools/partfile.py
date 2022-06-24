@@ -19,7 +19,7 @@ def part_read(arg) :
 			f = open(config.partfile_dir + os.sep + arg, 'r')
 		except IOError :
 			f = open(arg, 'r')
-		except Exception, e :
+		except Exception as e :
 			raise e
 		lines = f.readlines()
 		f.close

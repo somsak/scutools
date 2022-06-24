@@ -44,7 +44,7 @@ class Ptest(PExec) :
             retval = 0
             for line in lines :
                 line = string.strip(line)
-                host, exit_stat = string.split(line, ':', 1)
+                host, exit_stat = line.split(':', 1)
                 if not int(exit_stat) :
                     retval = 1
                     break

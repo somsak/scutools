@@ -5,7 +5,7 @@ Could be initialized from config file
 @author Somsak Sriprayoonsakul <somsaks@gmail.com>
 """
 import os,tempfile
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 
 conf_name = 'scutools.conf'
 conf_part = 'part'

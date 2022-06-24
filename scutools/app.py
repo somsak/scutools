@@ -6,8 +6,8 @@
 import sys,os
 
 
-from pexec import PExec
-from error import *
+from scutools.pexec import PExec
+from scutools.error import *
 
 global progname
 progname = os.path.basename(sys.argv[0])
@@ -22,23 +22,23 @@ def main() :
     try :
 
         if progname == 'pexec' :
-            if len(sys.argv) == 1 : raise InvalArg, 'missing argument'
+            if len(sys.argv) == 1 : raise InvalArg('missing argument')
             execer = PExec(None, sys.argv[1:])
         elif progname == 'pls' :
             execer = PExec('ls', sys.argv[1:])
         elif progname == 'pps' :
             execer = PExec('ps', sys.argv[1:])
         elif progname == 'pcp' :
-            if len(sys.argv) == 1 : raise InvalArg, 'missing argument'
+            if len(sys.argv) == 1 : raise InvalArg('missing argument')
             execer = PExec('cp', sys.argv[1:])
         elif progname == 'pmv' :
-            if len(sys.argv) == 1 : raise InvalArg, 'missing argument'
+            if len(sys.argv) == 1 : raise InvalArg('missing argument')
             execer = PExec('mv', sys.argv[1:])
         elif progname == 'prm' :
-            if len(sys.argv) == 1 : raise InvalArg, 'missing argument'
+            if len(sys.argv) == 1 : raise InvalArg('missing argument')
             execer = PExec('rm', sys.argv[1:])
         elif progname == 'pcat' :
-            if len(sys.argv) == 1 : raise InvalArg, 'missing argument'
+            if len(sys.argv) == 1 : raise InvalArg('missing argument')
             execer = PExec('cat', sys.argv[1:])
         elif progname == 'pfind' :
             execer = PExec('find', sys.argv[1:])
@@ -68,15 +68,15 @@ def main() :
             sys.exit(1)
         retval = execer.launch()
         sys.exit(retval)
-    except NoError, e :
+    except NoError as e :
         pass
-    except (NodeStatus, InvalHost, InvalArg), e :
+    except (NodeStatus, InvalHost, InvalArg) as e :
         print_error(e)
-    except KeyboardInterrupt, e :
+    except KeyboardInterrupt as e :
         print_error('interrupted by user')
     except SystemExit :
         raise
-    except Exception, e :
+    except Exception as e :
         print_error(e)
         raise
     sys.exit(1)

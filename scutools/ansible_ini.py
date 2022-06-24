@@ -41,7 +41,7 @@
 # along with this software.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os, sys, commands, string, socket
+import os, sys, string, socket
 from scutools import config
 from scutools.error import NodeStatus, InvalArg
 
@@ -299,8 +299,8 @@ class InventoryParser(object):
 if __name__ == '__main__' :
     ip = InventoryParser(filename=sys.argv[1])
     
-    print '--- Group ---'
-    print ip.groups['httpserver']
+    print('--- Group ---')
+    print(ip.groups['httpserver'])
 #     print '--- All Group ---'
 #     print ip.groups['all']
 #     print '--- Ungrouped Group ---'

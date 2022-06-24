@@ -4,7 +4,7 @@
   @author Somsak Sriprayoonsakul <somsaks@gmail.com>
 """
 
-import os, sys, commands, string, socket
+import os, sys, string, socket
 from scutools import config
 from scutools.error import NodeStatus
 from scutools.ansible_ini import InventoryParser
@@ -35,26 +35,6 @@ class AnsibleHostSrc(HostSrc):
         
         return ansible_ini.get_hosts()
 
-class ScmsHostSrc(HostSrc) :
-    def get_alive(self, flag) :
-        cmd = None
-        opt = ''
-        if flag and (flag & ALL) :
-            # get only alive node
-            opt = opt + ' -a'
-        if flag and (flag & ALL_EXC) :
-            opt = opt + ' -e'
-        cmd = config.sce_host + opt
-        status, output = commands.getstatusoutput(cmd)
-        if status == 0 :
-            host_list = string.split(output)
-            if (flag & ALL) or (flag & ALL_EXC) :
-                for host in HostSrc.get_alive(self) :
-                    if not host in host_list :
-                        host_list.append(host)
-        else :
-            raise NodeStatus, 'sce_host ' + opt
-
 class GstatHostSrc(HostSrc) :
     def get_alive(self, flag) :
         host_list = []
@@ -66,7 +46,7 @@ class GstatHostSrc(HostSrc) :
             host_list.append(host)
         exit_stat = gstat_cmd.close()
         if not exit_stat is None :
-            raise NodeStatus, 'gstat -a -m -l'
+            raise NodeStatus('gstat -a -m -l')
 
         if flag and (flag & ALL) :
             gstat_cmd = os.popen(config.gstat + ' -d -1 -l', 'r')
@@ -82,7 +62,7 @@ class GstatHostSrc(HostSrc) :
                     host_list.append(hostent[0])
             exit_stat = gstat_cmd.close()
             if not exit_stat is None :
-                raise NodeStatus, 'gstat -a -m -l'
+                raise NodeStatus('gstat -a -m -l')
 
             # also use hostlist defined in configuration file
             for host in HostSrc.get_alive(self) :
@@ -111,9 +91,9 @@ def get_alive(flag = ALIVE) :
     return host_src.get_alive(flag = flag)
 
 if __name__ == '__main__' :
-    print '*** alive nodes ***'
-    print get_alive(ALIVE)
-    print '*** all nodes ***'
-    print get_alive(ALL)
-    print '*** all nodes except self ***'
-    print get_alive(ALIVE | ALL_EXC)
+    print('*** alive nodes ***')
+    print(get_alive(ALIVE))
+    print('*** all nodes ***')
+    print(get_alive(ALL))
+    print('*** all nodes except self ***')
+    print(get_alive(ALIVE | ALL_EXC))

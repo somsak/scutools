@@ -10,7 +10,7 @@ import re, string
 def genrerange(pattern) :
 	"Generate or'ed normal regular expression"
 	try :
-		a, b = string.split(pattern, '-', 2)
+		a, b = pattern.split('-', 2)
 		return '(' + string.join( map(str, range(int(a), int(b) + 1)), '|') + ')'
 	except :
 		raise re.error
@@ -21,7 +21,7 @@ def compile(pattern) :
 	idx = 0
 	newpat = ''
 	while 1 :
-		l_idx = string.find(pattern, '<', idx)
+		l_idx = pattern.find('<', idx)
 		if (l_idx == -1) or ((l_idx != 0) and (pattern[l_idx - 1] == '\\')) :
 			newpat = newpat + pattern[idx:] 
 			break
@@ -42,32 +42,28 @@ def compile(pattern) :
 if __name__ == '__main__' :
 	import re
 
-	print genrerange('1-1024')
+	print(genrerange('1-1024'))
 	try :
-		print genrerange('1-')
-	except re.error, e:
-		print 'OK'
+		print(genrerange('1-'))
+	except re.error as e:
+		print('OK')
 	try :
-		print genrerange('1024-')
-	except re.error, e:
-		print 'OK'
+		print(genrerange('1024-'))
+	except re.error as e:
+		print('OK')
 	try :
-		print genrerange('1-2-3')
-	except re.error, e:
-		print 'OK'
+		print(genrerange('1-2-3'))
+	except re.error as e:
+		print('OK')
 	r = compile('^<3-10>$')
 	for i in range(10) :
-		print str(i) + ':',
-		print r.match(str(i))
+		print("{}:{}".format(i, r.match(str(i))))
 	r = compile('^compute<3-10>$')
 	for i in range(10) :
-		print str(i) + ':',
-		print r.match('compute' + str(i))
+		print("{}:{}".format(i, r.match('compute' + str(i))))
 	r = compile('^compute<3-7>xxx$')
 	for i in range(10) :
-		print str(i) + ':',
-		print r.match('compute' + str(i) + 'xxx')
+		print("{}:{}".format(i, r.match('compute' + str(i) + 'xxx')))
 	r = compile('^compute<3-7>xxx<1024-2048>$')
 	for i in range(10) :
-		print str(i) + ':',
-		print r.match('compute' + str(i) + 'xxx' + str(1290) )
+		print("{}:{}".format(i, r.match('compute' + str(i) + 'xxx' + str(1290) )))

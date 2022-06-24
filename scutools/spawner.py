@@ -8,8 +8,8 @@ import sys,os,tempfile,string,select,tempfile
 from select import POLLIN, POLLOUT
 #import subprocess
 
-import config, util
-from util import ping_check
+from scutools import config, util
+from scutools.util import ping_check
 
 try :
     #import paramiko
@@ -188,7 +188,7 @@ class BgfSpawner(Spawner) :
         f = open(file, 'r')
         line = f.readline()
         #XXX: Assume hostname format, not IP
-        host = string.split(host, '.', 1)[0]
+        host = host.split('.', 1)[0]
         while line :
             line = util.trim_host(host) + ':\t' + line
             fd.write(line)

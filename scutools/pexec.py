@@ -4,13 +4,14 @@ Generic SUT interface
 @author Somsak Sriprayoonsakul
 """
 
-import sys, string, os
+import sys
+import string
+import os
 
-import config, node
-from error import *
-from ansible_ini import InventoryParser
-
-import spawner
+from scutools import config, node
+from scutools.error import *
+from scutools.ansible_ini import InventoryParser
+from scutools import spawner
 
 class PExec :
     "Generic interface to parallel command"
@@ -40,7 +41,7 @@ class PExec :
                 if prog_args[i][0:5] == '--scu' :
                     arg = prog_args[i][6:]
                     if arg :
-                        arg = string.split(arg, '=', 1)
+                        arg = arg.split('=', 1)
                         if len(arg) == 1 :
                             self.specarg[arg[0]] = 1
                         else :
@@ -65,7 +66,7 @@ class PExec :
                 if prog_args[0] == '--help' :
                     # this is special case, since --help is the first command which is not very likely to happen
                     if len(prog_args) < 2 :
-                        raise InvalArg, 'try man pexec'
+                        raise InvalArg('try man pexec')
                 if prog_args[0] == '-a' or\
                     prog_args[0] == '--all' :
                     self.hostarg = (self.HARG_ALL, None)
@@ -107,13 +108,13 @@ class PExec :
                 elif prog_args[0] == '-h' or\
                     prog_args[0] == '--host' :
                     if len(prog_args) < 2 :
-                        raise InvalArg, 'need at least one host pattern, such as \'compute.*\''
+                        raise InvalArg('need at least one host pattern, such as \'compute.*\'')
                     self.hostarg = (self.HARG_HOST, prog_args[1])
                     del prog_args[0:2]
                 elif prog_args[0] == '-ha' or\
                     prog_args[0] == '--host-all' :
                     if len(prog_args) < 2 :
-                        raise InvalArg, 'need at least one host pattern, such as \'compute<0-9>\''
+                        raise InvalArg('need at least one host pattern, such as \'compute<0-9>\'')
                     self.hostarg = (self.HARG_HOST, prog_args[1])
                     self.specarg['forceall'] = 1
                     del prog_args[0:2]
@@ -127,9 +128,9 @@ class PExec :
 
         except IndexError:
             if i < len(prog_args) :
-                raise InvalArg, prog_args[0]
+                raise InvalArg(prog_args[0])
             else :
-                raise InvalArg, 'none'
+                raise InvalArg('none')
 
     def parseHostArg(self) :
         "Create hostlist from host specification argument"
@@ -138,7 +139,7 @@ class PExec :
         if self.hostarg[0] == self.HARG_EXCEPT :
             flag = flag | node.ALL_EXC
 
-        if self.hostarg[0] == self.HARG_DOWN or self.specarg.has_key('forceall') :
+        if self.hostarg[0] == self.HARG_DOWN or ('forceall' in self.specarg) :
             self.hostlist = node.get_alive(node.ALL | flag)
         else :
             self.hostlist = node.get_alive(node.ALIVE | flag)
@@ -159,11 +160,11 @@ class PExec :
                 import partfile
                 tmp_hostlist = partfile.part_read(self.hostarg[1])
             elif self.hostarg[0] == self.HARG_HOST :
-                tmp_hostlist = string.split(self.hostarg[1], ',')
+                tmp_hostlist = self.hostarg[1].split(',')
             # Treat each line as REGEX
             #
             real_hostlist = []
-            import xre
+            from scutools import xre
             while tmp_hostlist :
                 h = tmp_hostlist[0]
                 try :
@@ -174,7 +175,7 @@ class PExec :
                         del tmp_hostlist[1]
                         continue
                     else :
-                        raise InvalHost, h
+                        raise InvalHost(h)
                 i = 0
                 while i < len(self.hostlist) :
                     # match the whole hostname
@@ -213,7 +214,7 @@ class PExec :
         """Execute the command, return the exit status"""
         # Get spawner first
         spawner_arg = config.def_spawner
-        if self.specarg.has_key('spawner') :
+        if 'spawner' in self.specarg :
             spawner_arg = self.specarg['spawner'][1]
         
         launcher = None
@@ -232,21 +233,21 @@ class PExec :
         """List partition file available on the system"""
         if config.hostlist_src != 'ansible' :
             if config.partfile_dir :
-                print 'Part available in this host are:'
+                print('Part available in this host are:')
                 for f in os.listdir(config.partfile_dir) :
                     path = os.path.join(config.partfile_dir, f)
                     if os.path.isfile(path) :
-                        print f
+                        print(f)
         else :
             ansible_ini = InventoryParser(filename=config.ansible_hosts)
-            for item in ansible_ini.groups.iterkeys() :
-                print item
+            for item in ansible_ini.groups.items() :
+                print(item)
         
 if __name__ == '__main__' :
     cmd = PExec(sys.argv[1], sys.argv[2:])
-    print 'command = ', cmd.cmd
-    print 'command args = ', cmd.cmd_args
-    print 'host arg = ', cmd.hostarg
-    print 'special args = ', cmd.specarg
-    print 'hostlist = ', cmd.hostlist
+    print('command = ', cmd.cmd)
+    print('command args = ', cmd.cmd_args)
+    print('host arg = ', cmd.hostarg)
+    print('special args = ', cmd.specarg)
+    print('hostlist = ', cmd.hostlist)
     cmd.launch()
