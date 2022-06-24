@@ -6,8 +6,8 @@ Interface for remote copy
 
 import os
 
-import config
-from util import ping_check
+from scutools import config
+from scutools.util import ping_check
 
 class Rdup :
     PRESERVE_PERM = 0x01
@@ -93,8 +93,11 @@ class RsyncBg(Rdup, BgfSpawner) :
         if copy_flag & self.VERBOSE :
             args.append('-v')
         args.append('-e %s' % config.rsh_cmd)
-        if os.environ.has_key('RSYNC_ARGS') :
+        try :
             args.append(os.environ['RSYNC_ARGS'])
+        except KeyError :
+            pass
+            
         args = args + source
         args.append(dest)
         return self.spawn(hostlist, None, args, out, err)

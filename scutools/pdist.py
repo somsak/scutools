@@ -37,14 +37,14 @@ class PDist(PExec) :
                 
         # Only real command left
         if len(args) < 2 :
-            raise InvalArg, 'missing destination'
+            raise InvalArg('missing destination')
         self.dest = args.pop(len(args) - 1)
         self.source = args
 
     def launch(self, out = None, err = None) :
         # Get spawner first
         spawner_arg = config.def_rdup
-        if self.specarg.has_key('rdup') :
+        if 'rdup' in self.specarg :
             spawner_arg = self.specarg['rdup']
         
         launcher = None
