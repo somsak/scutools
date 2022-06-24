@@ -21,10 +21,10 @@ class Phost(PExec) :
 
     def launch(self, out = None, err = None) :
         if self.options.number :
-            print len(self.hostlist)
+            print(len(self.hostlist))
         else :
             for host in self.hostlist :
-                print host
+                print(host)
 
 # if __name__ == '__main__' :
 #     cmd = Ptest(['-a', '-f', '/etc/passwd'])

@@ -38,4 +38,4 @@ def part_read(arg) :
 if __name__ == '__main__' :
 	import sys
 
-	print part_read(sys.argv[1])
+	print(part_read(sys.argv[1]))

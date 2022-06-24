@@ -150,13 +150,13 @@ class Group(object):
         self._hosts[host] = 1
     
     def get_hosts(self):
-        for name, group in self._groups.iteritems() :
+        for name, group in self._groups.items() :
             for host in group.get_hosts() :
                 self._hosts[host] = 1
-        return self._hosts.keys()
+        return list(self._hosts)
     
     def get_groups(self):
-        return self._groups.keys()
+        return list(self._groups)
     
     def __repr__(self):
         return 'Groups=' + str(self.get_groups()) + ', Hosts=' + str(self.get_hosts())

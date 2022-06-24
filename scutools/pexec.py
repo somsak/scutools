@@ -157,7 +157,7 @@ class PExec :
         if self.hostarg[0] == self.HARG_HOST or self.hostarg[0] == self.HARG_PART :
             tmp_hostlist = []
             if self.hostarg[0] == self.HARG_PART :
-                import partfile
+                from scutools import partfile
                 tmp_hostlist = partfile.part_read(self.hostarg[1])
             elif self.hostarg[0] == self.HARG_HOST :
                 tmp_hostlist = self.hostarg[1].split(',')
