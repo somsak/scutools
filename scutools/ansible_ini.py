@@ -142,7 +142,7 @@ class Group(object):
         self._hosts = {}
 
     def add_child_group(self, group) :
-        if self._groups.has_key(group) :
+        if group in self._groups :
             return
         self._groups[group.name] = group
     
@@ -294,7 +294,7 @@ class InventoryParser(object):
                     group.add_child_group(kid_group)
     
     def get_hosts(self):
-        return self.hosts.keys()
+        return list(self.hosts)
                     
 if __name__ == '__main__' :
     ip = InventoryParser(filename=sys.argv[1])
